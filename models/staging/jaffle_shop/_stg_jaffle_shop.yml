@@ -1,0 +1,25 @@
+version: 2
+
+models:
+    - name: stg_orders
+      description: >
+        Orders table contains orders from customers
+        that have purchased
+      columns:
+        - name: order_id
+          tests:
+            - unique
+            - not_null
+        - name: status
+          description: "{{ doc('order_status') }}"
+    - name: stg_customers
+      columns:
+        - name: customer_id
+          tests:
+            - unique
+            - not_null
+      tests:
+        - dbt_utils.fewer_rows_than:
+            compare_model: ref('stg_orders')
+            config:
+              severity: warn
