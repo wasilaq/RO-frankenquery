@@ -19,8 +19,8 @@ payments as (
 orders_transformed as (
 
     select 
-        id as order_id,
-        user_id as customer_id,
+        order_id,
+        customer_id,
         order_date,
         status,
         row_number() over (partition by user_id order by order_date, id) as user_order_seq,
@@ -33,10 +33,10 @@ orders_transformed as (
 customers_transformed as ( 
 
     select 
-        id as customer_id,
+        customer_id,
         first_name,
         last_name,
-        first_name || ' ' || last_name as full_name 
+        full_name 
     from customers
 
 ),
@@ -44,12 +44,12 @@ customers_transformed as (
 payments_transformed as (
 
     select
-        id as payment_id,
-        orderid as order_id,
-        paymentmethod as method,
+        payment_id,
+        order_id,
+        method,
         status,
-        round(amount/100.0,2) as amount,
-        created as payment_date
+        amount,
+        payment_date
     from payments
   
 ),
