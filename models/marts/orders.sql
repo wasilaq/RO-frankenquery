@@ -18,7 +18,6 @@ payments as (
 
 orders_transformed as (
 
-    -- staging model:  jaffle_shop/stg_orders
     select 
         id as order_id,
         user_id as customer_id,
@@ -33,19 +32,17 @@ orders_transformed as (
 
 customers_transformed as ( 
 
-    -- staging model:  jaffle_shop/stg_customers
     select 
         id as customer_id,
         first_name,
         last_name,
         first_name || ' ' || last_name as full_name 
     from customers
-    
+
 ),
 
 payments_transformed as (
 
-    -- staging model:  stripe/base/base_payments
     select
         id as payment_id,
         orderid as order_id,
@@ -59,7 +56,6 @@ payments_transformed as (
 
 successful_payments as (
  
-    -- staging model:  stripe/stg_successful_payments
     select *
     from payments_transformed 
     where status not in ('fail')
