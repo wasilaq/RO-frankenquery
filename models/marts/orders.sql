@@ -1,5 +1,21 @@
 WITH
 
+orders as (
+
+    select * from {{ ref('stg_orders') }}
+),
+
+customers as (
+
+    select * from {{ ref('stg_customers') }}
+),
+
+payments as (
+
+    select * from {{ ref('stg_payments') }}
+
+),
+
 orders_transformed as (
 
     -- staging model:  jaffle_shop/stg_orders
@@ -10,7 +26,7 @@ orders_transformed as (
         status,
         row_number() over (partition by user_id order by order_date, id) as user_order_seq,
         status not in ('returned','return_pending') as is_not_return
-    from raw.jaffle_shop.orders
+    from orders
   
     where orders.status NOT IN ('pending') 
 ),
@@ -23,7 +39,8 @@ customers_transformed as (
         first_name,
         last_name,
         first_name || ' ' || last_name as full_name 
-    from raw.jaffle_shop.customers
+    from customers
+    
 ),
 
 payments_transformed as (
@@ -36,7 +53,7 @@ payments_transformed as (
         status,
         round(amount/100.0,2) as amount,
         created as payment_date
-    from raw.stripe.payment
+    from payments
   
 ),
 
