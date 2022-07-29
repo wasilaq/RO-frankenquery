@@ -23,7 +23,7 @@ orders_transformed as (
         customer_id,
         order_date,
         status,
-        row_number() over (partition by user_id order by order_date, id) as user_order_seq,
+        row_number() over (partition by customer_id order by order_date, order_id) as user_order_seq,
         status not in ('returned','return_pending') as is_not_return
     from orders
   
